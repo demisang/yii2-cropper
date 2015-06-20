@@ -56,7 +56,7 @@ echo Cropper::widget([
         'success' => new JsExpression(<<<JS
             function(data) {
                 // data - your JSON response from [[cropUrl]]
-                $("myImage").attr("src", data.croppedImageSrc);
+                $("#myImage").attr("src", data.croppedImageSrc);
             }
 JS
         ),
