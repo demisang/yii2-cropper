@@ -8,6 +8,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\helpers\Url;
+use yii\web\JsExpression;
 
 class Cropper extends Widget
 {
@@ -23,13 +24,26 @@ class Cropper extends Widget
     public $modalView = 'modal';
     /** @var array HTML widget options */
     public $options = [];
-    /** @var array HTML-options for image tag */
-    public $imageOptions = [
-        'class' => 'cropper-image',
+    /** @var array Default HTML-options for image tag */
+    public $defaultImageOptions = [
+        'class' => 'cropper-image img-responsive',
         'alt' => 'crop-image',
+    ];
+    /** @var array HTML-options for image tag */
+    public $imageOptions = [];
+    /** @var array Default cropper options https://github.com/fengyuanchen/cropper/blob/master/README.md#options */
+    public $defaultPluginOptions = [
+        'strict' => true,
+        'autoCropArea' => 1,
+        'checkImageOrigin' => false,
+        'zoomable' => false,
     ];
     /** @var array Additional cropper options https://github.com/fengyuanchen/cropper/blob/master/README.md#options */
     public $pluginOptions = [];
+    /** @var array Ajax options for send crop-reques */
+    public $ajaxOptions = [
+        'success' => 'js:function(data) { console.log(data); }',
+    ];
 
     /**
      * @inheritdoc
@@ -42,6 +56,9 @@ class Cropper extends Widget
             $this->setId($this->options['id']);
         }
 
+        $this->pluginOptions = ArrayHelper::merge($this->defaultPluginOptions, $this->pluginOptions);
+        $this->imageOptions = ArrayHelper::merge($this->defaultImageOptions, $this->imageOptions);
+
         // Set additional cropper js-options
         if (!empty($this->aspectRatio)) {
             $this->pluginOptions['aspectRatio'] = $this->aspectRatio;
@@ -53,13 +70,15 @@ class Cropper extends Widget
             // Modal button
             $buttonOptions = $this->options;
             unset($buttonOptions['id']);
-            $content .= Html::a('Crop image', '#' . $this->id, ArrayHelper::merge([
-                'data' => [
-                    'toggle' => 'modal',
-                    'target' => '#' . $this->id,
-                    'crop-url' => Url::to($this->cropUrl),
-                ],
-            ], $buttonOptions));
+            $content .= Html::a('Crop <i class="glyphicon glyphicon-scissors"></i>', '#' . $this->id,
+                ArrayHelper::merge([
+                    'data' => [
+                        'toggle' => 'modal',
+                        'target' => '#' . $this->id,
+                        'crop-url' => Url::to($this->cropUrl),
+                    ],
+                    'class' => 'btn btn-primary',
+                ], $buttonOptions));
 
             // Modal dialog
             $content .= $this->render($this->modalView, ['widget' => $this]);
@@ -85,11 +104,10 @@ class Cropper extends Widget
         // Additional plugin options
         $options = Json::encode($this->pluginOptions);
 
-        $imageCssClass = $this->imageOptions['class'];
-        $selector = "#$this->id ." . $imageCssClass;
+        $selector = "#$this->id .crop-image-container > img";
 
         if ($this->modal) {
-
+            $ajaxOptions = Json::encode($this->ajaxOptions);
             $view->registerJs(<<<JS
 (function() {
 
@@ -103,14 +121,17 @@ class Cropper extends Widget
         var button = $(event.relatedTarget); // Button that triggered the modal
         cropUrl = button.data('crop-url'); // Extract info from data-* attributes
 
-        image.cropper({
-            autoCropArea: 0.5,
+        image.cropper($.extend({
             built: function () {
                 // Strict mode: set crop box data first
                 image.cropper('setCropBoxData', cropBoxData);
                 image.cropper('setCanvasData', canvasData);
+            },
+            dragend: function() {
+                cropBoxData = image.cropper('getCropBoxData');
+                canvasData = image.cropper('getCanvasData');
             }
-        });
+        }, $options));
     }).on('hidden.bs.modal', function () {
         cropBoxData = image.cropper('getCropBoxData');
         canvasData = image.cropper('getCanvasData');
@@ -120,11 +141,15 @@ class Cropper extends Widget
     $(document).on("click", "#$this->id .crop-submit", function(e) {
         e.preventDefault();
 
-        $.post(cropUrl, image.cropper('getCropBoxData'), function(data) {
-
-        }).fail(function() {
-            alert("Error while cropping");
-        });
+        $.ajax($.extend({
+            method: "POST",
+            url: cropUrl,
+            data: image.cropper("getData"),
+            dataType: "JSON",
+            error: function() {
+                alert("Error while cropping");
+            }
+        }, $ajaxOptions));
 
         modalBox.modal("hide");
     });
