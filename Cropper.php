@@ -36,6 +36,8 @@ class Cropper extends Widget
         'strict' => true,
         'autoCropArea' => 1,
         'checkImageOrigin' => false,
+        'checkCrossOrigin' => false,
+        'checkOrientation' => false,
         'zoomable' => false,
     ];
     /** @var array Additional cropper options https://github.com/fengyuanchen/cropper/blob/master/README.md#options */
