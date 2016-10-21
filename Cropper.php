@@ -12,6 +12,8 @@ use yii\web\JsExpression;
 
 class Cropper extends Widget
 {
+	/** @var string Crop Button's label  */
+	public $labelButton;
     /** @var string URL for send crop data */
     public $cropUrl;
     /** @var string Original image URL */
@@ -72,7 +74,10 @@ class Cropper extends Widget
             // Modal button
             $buttonOptions = $this->options;
             unset($buttonOptions['id']);
-            $content .= Html::a('Crop <i class="glyphicon glyphicon-scissors"></i>', '#' . $this->id,
+            if(!$this->labelButton) {
+				$this->labelButton = Yii::t('demicrop', 'Crop <i class="glyphicon glyphicon-scissors"></i>');
+			}
+            $content .= Html::a($this->labelButton, '#' . $this->id,
                 ArrayHelper::merge([
                     'data' => [
                         'toggle' => 'modal',
