@@ -32,6 +32,8 @@ _hint: functionality of this extension is already implemented into my extension 
 echo Cropper::widget([
     // If true - it's output button for toggle modal crop window
     'modal' => true,
+    //Label Button Crop
+    'labelButton' => ($image) ? Yii::t('demicrop', 'Edit Image') : Yii::t('demicrop', 'New Image'),
     // You can customize modal window. Copy /vendor/demi/cropper/views/modal.php
     'modalView' => '@backend/views/image/custom_modal',
     // URL-address for the crop-handling request
