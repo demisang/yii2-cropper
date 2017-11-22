@@ -46,6 +46,37 @@ class Cropper extends Widget
     public $ajaxOptions = [
         'success' => 'js:function(data) { console.log(data); }',
     ];
+    /**
+     * Translated messages:
+     *
+     * [
+     *     'cropBtn' => Yii::t('app', 'Crop'),
+     *     'cropModalTitle' => Yii::t('app', 'Select crop area and click "Crop" button'),
+     *     'closeModalBtn' => Yii::t('app', 'Close'),
+     *     'cropModalBtn' => Yii::t('app', 'Crop selected'),
+     * ]
+     *
+     * @var array
+     */
+    public $messages = [];
+
+    public function init()
+    {
+        parent::init();
+
+        if (empty($this->messages['cropBtn'])) {
+            $this->messages['cropBtn'] = 'Crop';
+        }
+        if (empty($this->messages['cropModalTitle'])) {
+            $this->messages['cropModalTitle'] = 'Select crop area and click "Crop" button';
+        }
+        if (empty($this->messages['closeModalBtn'])) {
+            $this->messages['closeModalBtn'] = 'Close';
+        }
+        if (empty($this->messages['cropModalBtn'])) {
+            $this->messages['cropModalBtn'] = 'Crop selected';
+        }
+    }
 
     /**
      * @inheritdoc
@@ -72,7 +103,8 @@ class Cropper extends Widget
             // Modal button
             $buttonOptions = $this->options;
             unset($buttonOptions['id']);
-            $content .= Html::a('Crop <i class="glyphicon glyphicon-scissors"></i>', '#' . $this->id,
+            $content .= Html::a($this->messages['cropBtn'] . ' <i class="glyphicon glyphicon-scissors"></i>',
+                '#' . $this->id,
                 ArrayHelper::merge([
                     'data' => [
                         'toggle' => 'modal',

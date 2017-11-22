@@ -51,6 +51,13 @@ echo Cropper::widget([
     'options' => [],
     // HTML-options for cropper image tag
     'imageOptions' => [],
+    // Translated messages
+    'messages' => [
+        'cropBtn' => Yii::t('app', 'Crop'),
+        'cropModalTitle' => Yii::t('app', 'Select crop area and click "Crop" button'),
+        'closeModalBtn' => Yii::t('app', 'Close'),
+        'cropModalBtn' => Yii::t('app', 'Crop selected'),
+    ],
     // Additional ajax-options for send crop-request. See jQuery $.ajax() options
     'ajaxOptions' => [
         'success' => new JsExpression(<<<JS
