@@ -1,4 +1,10 @@
 <?php
+/**
+ * @copyright Copyright (c) 2018 Ivan Orlov
+ * @license   https://github.com/demisang/yii2-cropper/blob/master/LICENSE
+ * @link      https://github.com/demisang/yii2-cropper#readme
+ * @author    Ivan Orlov <gnasimed@gmail.com>
+ */
 
 use demi\cropper\Cropper;
 use yii\helpers\Html;
@@ -6,7 +12,6 @@ use yii\web\View;
 
 /* @var $this View */
 /* @var $widget Cropper */
-
 ?>
 <div class="modal fade" id="<?= $widget->id ?>" role="modal">
     <div class="modal-dialog modal-lg">

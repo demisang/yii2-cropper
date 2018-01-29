@@ -1,15 +1,22 @@
 <?php
+/**
+ * @copyright Copyright (c) 2018 Ivan Orlov
+ * @license   https://github.com/demisang/yii2-cropper/blob/master/LICENSE
+ * @link      https://github.com/demisang/yii2-cropper#readme
+ * @author    Ivan Orlov <gnasimed@gmail.com>
+ */
 
 namespace demi\cropper;
 
-use Yii;
 use yii\base\Widget;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\helpers\Url;
-use yii\web\JsExpression;
 
+/**
+ * Cropper widget
+ */
 class Cropper extends Widget
 {
     /** @var string URL for send crop data */
